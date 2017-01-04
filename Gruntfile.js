@@ -7,7 +7,7 @@ module.exports = function(grunt) {
         sourceMap: true
       },
       dist: {
-        dest: 'dist/jsoneditor.js',
+        dest: '../easyapp/assets/js/jsoneditor.js',
         src: [
           // License & version info, start the containing closure
           'src/intro.js',

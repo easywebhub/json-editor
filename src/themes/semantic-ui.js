@@ -1,4 +1,4 @@
-JSONEditor.defaults.themes.bootstrap3 = JSONEditor.AbstractTheme.extend({
+JSONEditor.defaults.themes.semanticui = JSONEditor.AbstractTheme.extend({
     getSelectInput:          function (options) {
         var el = this._super(options);
         el.className += 'form-control';
@@ -6,7 +6,11 @@ JSONEditor.defaults.themes.bootstrap3 = JSONEditor.AbstractTheme.extend({
         return el;
     },
     setGridColumnSize:       function (el, size) {
-        el.className = 'col-md-' + size;
+        // convert base 12 cols to 16 cols
+        var sizeNames = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen'];
+        size = Math.ceil(size / 12 * 16);
+        console.log('AA size', size);
+        el.className = sizeNames[size] + ' column wide';
     },
     afterInputReady:         function (input) {
         if (input.controlgroup) return;
@@ -18,9 +22,15 @@ JSONEditor.defaults.themes.bootstrap3 = JSONEditor.AbstractTheme.extend({
         // TODO: use bootstrap slider
     },
     getTextareaInput:        function () {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'ui form';
+
+
         var el = document.createElement('textarea');
-        el.className = 'form-control';
-        return el;
+        el.className = 'field';
+
+        wrapper.appendChild(el);
+        return wrapper;
     },
     getRangeInput:           function (min, max, step) {
         // TODO: use better slider
@@ -29,14 +39,8 @@ JSONEditor.defaults.themes.bootstrap3 = JSONEditor.AbstractTheme.extend({
     getFormInputField:       function (type) {
         var el = this._super(type);
         if (type !== 'checkbox') {
-            el.className += 'form-control';
-            // el.style = 'margin-top: 8px';
+            el.className += 'field';
         }
-        return el;
-    },
-    getFormInputLabel: function(text){
-        var el = document.createElement('label');
-        el.appendChild(document.createTextNode(text));
         return el;
     },
     getFormControl:          function (label, input, description) {
@@ -50,11 +54,10 @@ JSONEditor.defaults.themes.bootstrap3 = JSONEditor.AbstractTheme.extend({
             group.appendChild(label);
             input.style.position = 'relative';
             input.style.cssFloat = 'left';
-        }
-        else {
-            group.className += ' form-group';
+        } else {
+            group.className += ' field';
             if (label) {
-                label.className += ' control-label';
+                label.className += ' ';
                 group.appendChild(label);
             }
             group.appendChild(input);
@@ -65,10 +68,22 @@ JSONEditor.defaults.themes.bootstrap3 = JSONEditor.AbstractTheme.extend({
         return group;
     },
     getIndentedPanel:        function () {
-        var el = document.createElement('div');
-        el.className = 'well well-sm ui form';
-        el.style.paddingBottom = 0;
-        return el;
+        var accordion = document.createElement('div');
+        accordion.className = 'ui styled accordion getIndentedPanel';
+
+        var title = document.createElement('div');
+        title.className = 'title getIndentedPanel';
+        title.innerHTML = '<i class="dropdown icon"></i>';
+
+        var content = document.createElement('div');
+        content.className = 'content getIndentedPanel';
+
+        accordion.appendChild(title);
+        accordion.appendChild(content);
+        setTimeout(function () {
+            $(accordion).accordion();
+        }, 100);
+        return accordion;
     },
     getFormInputDescription: function (text) {
         var el = document.createElement('p');
@@ -83,19 +98,18 @@ JSONEditor.defaults.themes.bootstrap3 = JSONEditor.AbstractTheme.extend({
     },
     getButtonHolder:         function () {
         var el = document.createElement('div');
-        el.className = 'btn-group';
+        el.className = 'ui buttons';
         return el;
     },
     getButton:               function (text, icon, title) {
         var el = this._super(text, icon, title);
-        el.className += 'btn btn-default';
+        el.className += 'ui button';
         return el;
     },
     getTable:                function () {
         var el = document.createElement('table');
-        el.className = 'table table-bordered table-responsive';
-        // el.style.width = 'auto';
-        el.style.width = '100%';
+        el.className = 'table table-bordered';
+        el.style.width = 'auto';
         el.style.maxWidth = 'none';
         return el;
     },
