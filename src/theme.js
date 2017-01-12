@@ -82,13 +82,15 @@ JSONEditor.AbstractTheme = Class.extend({
         }
         else {
             el.appendChild(text);
-            // hide root
-            if (text.textContent && text.textContent === 'root') {
-                setTimeout(function () {
-                    console.log('remove this');
-                    $(el).remove();
-                }, 100);
-            }
+            if (text.textContent === 'root')
+                text.textContent = 'FIELDS';
+            // NOTE this code hide root
+            // if (text.textContent && text.textContent === 'root') {
+            //     setTimeout(function () {
+            //         console.log('remove this');
+            //         $(el).remove();
+            //     }, 100);
+            // }
         }
 
         return el;

@@ -126,35 +126,8 @@ JSONEditor.defaults.editors.array = JSONEditor.AbstractEditor.extend({
     },
     postBuild:            function () {
         var me = this;
-        if (this.options.disable_config || (this.options.disable_config !== false && this.jsoneditor.options.disable_config))
-            return;
-        // add setting button
-        var div = $(document.createElement('div'));
-        div.addClass('dropdown');
-        div.css({
-            display: 'inline-block'
-        });
+        this._super();
 
-        div.html(`&nbsp;&nbsp;
-            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                <span class="currentFormat">Format</span>
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu">
-                <li><a href="#">string</a></li>
-                <li><a href="#">number</a></li>
-                <li><a href="#">integer</a></li>
-                <li><a href="#">boolean</a></li>
-                <li><a href="#">object</a></li>
-                <li><a href="#">array</a></li>
-            </ul>`);
-
-        $(this.header).after(div);
-        $(div).find('.currentFormat').text(me.options.schema.type);
-        $(div).find('li>a').on('click', function (e) {
-            if (window.showJsonSchemaConfigDialog)
-                window.showJsonSchemaConfigDialog(e.target.innerText, me.options);
-        });
     },
     onChildEditorChange:  function (editor) {
         this.refreshValue();

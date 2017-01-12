@@ -10,10 +10,17 @@ JSONEditor.defaults.editors.upload = JSONEditor.AbstractEditor.extend({
         this.input = this.theme.getFormInputField('text');
         // this.input.readOnly = true;
 
+        this.input.addEventListener('keyup', function (e) {
+            // self.value = self.input.value;
+            self.setValue(self.input.value);
+            if (self.parent) self.parent.onChildEditorChange(self);
+            else self.jsoneditor.onChange();
+        });
+
         // Don't show uploader if this is readonly
         if (!this.schema.readOnly && !this.schema.readonly) {
 
-            if (!this.jsoneditor.options.upload) throw "Upload handler required for upload editor";
+            // if (!this.jsoneditor.options.upload) throw "Upload handler required for upload editor";
 
             // File uploader
             this.uploader = this.theme.getFormInputField('file');
@@ -42,38 +49,33 @@ JSONEditor.defaults.editors.upload = JSONEditor.AbstractEditor.extend({
         this.preview = this.theme.getFormInputDescription(description);
         // this.container.appendChild(this.preview);
 
-        // TEMPLATE
-        // <div class="input-group">
-        //     <input type="text" class="form-control" readonly>
-        //     <label class="input-group-btn">
-        //         <span class="btn btn-primary">
-        //             Browse&hellip; <input type="file" style="display: none;" multiple>
-        //         </span>
-        //     </label>
-        // </div>
 
+        if(this.jsoneditor.options.disable_config) {
+            // custom upload layout
+            var inputGroup = document.createElement('div');
+            inputGroup.className += 'input-group';
 
-        // custom upload layout
-        var inputGroup = document.createElement('div');
-        inputGroup.className += 'input-group';
+            var inputGroupBtn = document.createElement('label');
+            inputGroupBtn.className += 'input-group-btn';
+            var browseSpan = document.createElement('span');
+            browseSpan.className += 'btn btn-primary';
 
-        var inputGroupBtn = document.createElement('label');
-        inputGroupBtn.className += 'input-group-btn';
-        var browseSpan = document.createElement('span');
-        browseSpan.className += 'btn btn-primary';
+            inputGroup.appendChild(this.input);
+            inputGroup.appendChild(inputGroupBtn);
+            inputGroupBtn.appendChild(browseSpan);
+            browseSpan.appendChild(document.createTextNode('Browse…'));
+            browseSpan.appendChild(this.uploader);
 
-        inputGroup.appendChild(this.input);
-        inputGroup.appendChild(inputGroupBtn);
-        inputGroupBtn.appendChild(browseSpan);
-        browseSpan.appendChild(document.createTextNode('Browse…'));
-        browseSpan.appendChild(this.uploader);
+            if (!this.schema.readOnly && !this.schema.readonly) {
+                browseSpan.disabled = true;
+            }
 
-        if (!this.schema.readOnly && !this.schema.readonly) {
-            browseSpan.disabled = true;
+            // this.control = this.theme.getFormControl(this.label, this.uploader || this.input, this.preview);
+            this.control = this.theme.getFormControl(this.label, inputGroup, this.preview);
+        } else {
+            this.control = this.theme.getFormControl(this.label, document.createTextNode(''), this.preview);
         }
 
-        // this.control = this.theme.getFormControl(this.label, this.uploader || this.input, this.preview);
-        this.control = this.theme.getFormControl(this.label, inputGroup, this.preview);
         this.container.appendChild(this.control);
     },
     refreshPreview: function () {

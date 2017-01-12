@@ -10,36 +10,14 @@ JSONEditor.defaults.editors.string = JSONEditor.AbstractEditor.extend({
         this.input.removeAttribute('name');
     },
     postBuild:            function () {
+        this._super();
         var me = this;
+        if (!this.jsoneditor.options.disable_config) {
+            this.input.style.display = 'none';
+        }
+
         if (this.options.disable_config || (this.options.disable_config !== false && this.jsoneditor.options.disable_config))
             return;
-        // add setting button
-        var div = $(document.createElement('div'));
-        div.addClass('dropdown');
-        div.css({
-            display: 'inline-block'
-        });
-
-        div.html(`&nbsp;&nbsp;
-            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                <span class="currentFormat">Format</span>
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu">
-                <li><a href="#">string</a></li>
-                <li><a href="#">number</a></li>
-                <li><a href="#">integer</a></li>
-                <li><a href="#">boolean</a></li>
-                <li><a href="#">object</a></li>
-                <li><a href="#">array</a></li>
-            </ul>`);
-
-        $(this.label).after(div);
-        $(div).find('.currentFormat').text(me.options.schema.type);
-        $(div).find('li>a').on('click', function (e) {
-            if (window.showJsonSchemaConfigDialog)
-                window.showJsonSchemaConfigDialog(e.target.innerText, me.options);
-        });
     },
     setValue:             function (value, initial, from_template) {
         var self = this;
@@ -196,6 +174,7 @@ JSONEditor.defaults.editors.string = JSONEditor.AbstractEditor.extend({
             // HTML5 Input type
             else {
                 this.input_type = this.format;
+                // this.input_type = 'text';
                 this.input = this.theme.getFormInputField(this.input_type);
             }
         }
@@ -325,28 +304,37 @@ JSONEditor.defaults.editors.string = JSONEditor.AbstractEditor.extend({
         // console.log('STRING this.options', this.options);
         // datetime
         var onDateChange = function (value) {
+            console.log('value', value);
+            if (Array.isArray(value) && value.length >= 1)
+                value = value[0];
             // van hien thi value theo format tren form
             // self.input.value = value.date.toISOString();
             // value luu file la iso format string
-            self.value = value.date.toISOString();
+            self.value = moment(value).toISOString();
             self.is_dirty = true;
             self.onChange(true);
         };
 
         if (this.format === 'datetime') {
+            this.input_type = 'text';
             console.log('INIT DATETIME INPUT');
-            $(self.input).datetimepicker({
+            $(self.input).flatpickr({
                 format: 'DD-MM-YYYY HH:mm:ss',
-                // calendarType: 'datetime'
-            }).on('dp.change', onDateChange);
+                enableTime: true,
+                onValueUpdate: onDateChange
+            });
         } else if (this.format === 'time') {
-            $(self.input).datetimepicker({
+            this.input_type = 'text';
+            $(self.input).flatpickr({
                 format: 'HH:mm:ss',
-                // calendarType: 'time'
+                noCalendar: true,
+                onValueUpdate: onDateChange
             }).on('dp.change', onDateChange);
         } else if (this.format === 'date') {
-            $(self.input).datetimepicker({
+            this.input_type = 'text';
+            $(self.input).flatpickr({
                 format: 'DD-MM-YYYY',
+                enableTime: false,
                 // calendarType: 'date'
             }).on('dp.change', onDateChange);
         }

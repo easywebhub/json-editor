@@ -43,15 +43,19 @@ JSONEditor.defaults.themes.bootstrap3 = JSONEditor.AbstractTheme.extend({
         var group = document.createElement('div');
 
         if (label && input.type === 'checkbox') {
-            group.className += ' checkbox';
+            // group.className += ' checkbox';
+            // group.className += ' control-label';
+            // debugger;
+            group.className += ' form-group';
+            label.className += ' control-label';
+
             label.appendChild(input);
             label.style.fontSize = '14px';
             group.style.marginTop = '0';
             group.appendChild(label);
             input.style.position = 'relative';
             input.style.cssFloat = 'left';
-        }
-        else {
+        } else {
             group.className += ' form-group';
             if (label) {
                 label.className += ' control-label';
@@ -63,6 +67,11 @@ JSONEditor.defaults.themes.bootstrap3 = JSONEditor.AbstractTheme.extend({
         if (description) group.appendChild(description);
 
         return group;
+    },
+    getMultiCheckboxHolder:  function (controls, label, description) {
+        var el = this._super(controls, label, description);
+        el.className += ' form-group';
+        return el;
     },
     getIndentedPanel:        function () {
         var el = document.createElement('div');

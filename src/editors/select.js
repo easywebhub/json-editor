@@ -160,6 +160,11 @@ JSONEditor.defaults.editors.select = JSONEditor.AbstractEditor.extend({
         if (this.options.compact) this.container.className += ' compact';
 
         this.input = this.theme.getSelectInput(this.enum_options);
+
+        if (!this.jsoneditor.options.disable_config) {
+            this.input.style.display = 'none';
+        }
+
         this.theme.setSelectOptions(this.input, this.enum_options, this.enum_display);
 
         if (this.schema.readOnly || this.schema.readonly) {
