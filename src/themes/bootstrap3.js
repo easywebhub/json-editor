@@ -45,16 +45,14 @@ JSONEditor.defaults.themes.bootstrap3 = JSONEditor.AbstractTheme.extend({
         if (label && input.type === 'checkbox') {
             // group.className += ' checkbox';
             // group.className += ' control-label';
-            // debugger;
-            group.className += ' form-group';
-            label.className += ' control-label';
-
-            label.appendChild(input);
-            label.style.fontSize = '14px';
-            group.style.marginTop = '0';
-            group.appendChild(label);
-            input.style.position = 'relative';
-            input.style.cssFloat = 'left';
+            if (label) {
+                label.appendChild(input);
+                label.style.fontSize = '14px';
+                group.style.marginTop = '0';
+                group.appendChild(label);
+                input.style.position = 'relative';
+                input.style.cssFloat = 'left';
+            }
         } else {
             group.className += ' form-group';
             if (label) {
